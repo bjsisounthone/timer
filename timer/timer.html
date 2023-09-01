@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timer App</title>
+</head>
+<body>
+<h1>Timer App</h1>
+<label for="minutes">Set timer (minutes):</label>
+<input type="number" id="minutes" min="1" step="1" value="1">
+<button id="startButton">Start Timer</button>
+<div id="timerDisplay"></div>
+
+<script>
+    // Get references to HTML elements
+    const minutesInput = document.getElementById('minutes');
+    const startButton = document.getElementById('startButton');
+    const timerDisplay = document.getElementById('timerDisplay');
+
+    let countdown;
+    let endTime;
+
+    function startTimer(duration) {
+        const now = Date.now();
+        endTime = now + duration * 60 * 1000;
+
+        countdown = setInterval(updateTimer, 1000);
+        updateTimer();
+        startButton.disabled = true;
+        minutesInput.disabled = true;
+    }
+
+    function updateTimer() {
+        const now = Date.now();
+        const timeLeft = endTime - now;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerDisplay.textContent = 'Timer expired!';
+            startButton.disabled = false;
+            minutesInput.disabled = false;
+            return;
+        }
+
+        const minutes = Math.floor(timeLeft / (60 * 1000));
+        const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+
+        timerDisplay.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    }
+
+    startButton.addEventListener('click', () => {
+        const minutes = parseInt(minutesInput.value, 10);
+        if (!isNaN(minutes) && minutes > 0) {
+            startTimer(minutes);
+        }
+    });
+</script>
+</body>
+</html>
